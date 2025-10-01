@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useOptimistic } from 'react';
 import { Container } from '$components/container';
 import { Alert } from '$components/alert';
 import { PostForm } from './components/post-form';
 import { PostList } from './components/post-list';
 import { createPost, removePost, listPosts } from '$/common/api';
-import type { Post, PostFormData } from './types';
+import type { OptimisticPost, Post, PostFormData } from './types';
 
 // Using a fixed user ID for this demo
 const CURRENT_USER_ID = 1;
@@ -13,6 +13,19 @@ function Application() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [optimisticPosts, addOptimisticPost] = useOptimistic(
+    posts,
+    (state, newPost: OptimisticPost) => {
+      if (newPost.isPending) {
+        console.log('Adding new post');
+        return [newPost, ...state];
+      }
+
+      console.log('Removing optimistic post');
+      return state.filter((post) => post.id !== newPost.id);
+    },
+  );
 
   // Fetch initial posts
   useEffect(() => {
@@ -35,6 +48,16 @@ function Application() {
   const handleCreatePost = async (formData: PostFormData) => {
     try {
       setError(null);
+
+      const temporary: OptimisticPost = {
+        id: crypto.randomUUID() as unknown as any,
+        title: formData.title,
+        body: formData.body,
+        userId: CURRENT_USER_ID as any,
+        isPending: true,
+      };
+
+      addOptimisticPost(temporary);
 
       // Call API and wait for response
       const newPost = await createPost({
@@ -73,8 +96,9 @@ function Application() {
           Anti-Social Network
         </h1>
         <p className="text-slate-600 dark:text-slate-400">
-          Create and delete posts. Try creating or deleting a post - notice how you have to wait
-          for the server response? The UI feels sluggish because we&apos;re not using optimistic updates.
+          Create and delete posts. Try creating or deleting a post - notice how you have to wait for
+          the server response? The UI feels sluggish because we&apos;re not using optimistic
+          updates.
         </p>
       </section>
 
@@ -90,11 +114,11 @@ function Application() {
 
       <section>
         {isLoading ? (
-          <div className="text-center py-12">
+          <div className="py-12 text-center">
             <p className="text-slate-600 dark:text-slate-400">Loading posts...</p>
           </div>
         ) : (
-          <PostList posts={posts} onDeletePost={handleDeletePost} />
+          <PostList posts={optimisticPosts} onDeletePost={handleDeletePost} />
         )}
       </section>
     </Container>
