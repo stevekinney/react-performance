@@ -43,6 +43,7 @@ function Version1MissingDeps() {
 ```
 
 **What happens:**
+
 - Effect runs only once on mount
 - When you click different users, `userId` changes but effect doesn't re-run
 - UI always shows the first user, no matter what you click
@@ -75,6 +76,7 @@ function Version2RaceCondition() {
 ```
 
 **What happens:**
+
 - Effect re-runs correctly when `userId` changes ✅
 - But if you rapidly click User 1 → User 2 → User 3, multiple requests are in-flight
 - Due to random delays, User 2's request might complete last
@@ -82,7 +84,9 @@ function Version2RaceCondition() {
 - The red border highlights the mismatch
 
 **Why it happens:**
+
 Each fetch has a random delay (500-2000ms). Imagine this sequence:
+
 1. Click User 1 → Request starts (will take 1800ms)
 2. Click User 2 → Request starts (will take 600ms)
 3. User 2 completes first (600ms) → Shows User 2 ✅
@@ -123,12 +127,14 @@ function Version3NoCleanup() {
 ```
 
 **What happens:**
+
 1. Select a user (starts a fetch)
 2. Click "Unmount Component" (component removed from DOM)
 3. Fetch completes and tries to call `setUser()` and `setLoading()`
 4. React warning in console: "Can't perform a React state update on an unmounted component"
 
 **Why it's bad:**
+
 - Memory leak (the async operation holds references)
 - Console warnings clutter your logs
 - In complex apps, can cause crashes or weird behavior
@@ -197,6 +203,7 @@ function Version4Fixed() {
 3. **Cleanup function**: `return () => { cancelled = true; }`
 
 **How it works:**
+
 - When `userId` changes, React calls the cleanup function
 - Cleanup sets `cancelled = true`
 - Old fetch completes, but sees `cancelled === true`, so doesn't update state
@@ -204,6 +211,7 @@ function Version4Fixed() {
 - Console shows cancelled requests
 
 **Try it:**
+
 - Rapidly click between users
 - Console shows multiple fetches, but only the latest one sets state
 - No more race conditions or stale data!
@@ -227,6 +235,7 @@ useEffect(() => {
 ```
 
 **Order of operations:**
+
 1. Component renders
 2. React updates the DOM
 3. Browser paints the screen
@@ -288,6 +297,7 @@ function UserProfile({ userId }) {
 ```
 
 **What happens:**
+
 - Effect runs once on mount with initial `userId`
 - `userId` prop changes, but effect doesn't re-run
 - UI shows stale data
@@ -342,6 +352,7 @@ function UserProfile({ userId }) {
 ```
 
 **Scenario:**
+
 1. Render with `userId = 1` → Fetch starts (will take 2000ms)
 2. Render with `userId = 2` → Fetch starts (will take 500ms)
 3. User 2 fetch completes (500ms) → `setUser(user2)` ✅
@@ -395,6 +406,7 @@ useEffect(() => {
 ```
 
 **Benefits of AbortController:**
+
 - Actually cancels the network request (saves bandwidth)
 - Standard browser API
 - Works with any fetch-based library
@@ -441,6 +453,7 @@ useEffect(() => {
 ### Why It Matters
 
 In React 18+ Strict Mode, components mount → unmount → mount again in development. Without cleanup, you'll see:
+
 - Double fetches
 - Console warnings
 - Stale state updates
@@ -665,6 +678,7 @@ useEffect(() => {
 ```
 
 **Look for:**
+
 - Effect running when it shouldn't (check dependencies)
 - Effect not running when it should (missing dependencies)
 - Cleanup not running (missing return statement)

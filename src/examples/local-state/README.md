@@ -100,7 +100,7 @@ export function CounterWidget() {
         Counter Widget
       </h3>
       <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
-        A simple counter. Notice this only re-renders when you interact with IT.
+        A simple counter. Notice this only re-renders when you interact with it.
       </p>
 
       <div className="flex items-center justify-center space-x-4">
