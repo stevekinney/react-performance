@@ -110,7 +110,7 @@
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50;
+    @apply bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-50;
     font-family:
       system-ui,
       -apple-system,
