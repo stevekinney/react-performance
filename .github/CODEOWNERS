@@ -1,0 +1,22 @@
+# CODEOWNERS file
+# This file defines who is responsible for code in this repository.
+# These owners will be the default assignees for pull requests.
+
+# Default owners for everything in the repo
+* @stevekinney
+
+# GitHub specific files
+.github/ @stevekinney
+
+# Configuration files
+*.json @stevekinney
+*.yml @stevekinney
+*.yaml @stevekinney
+*.toml @stevekinney
+
+# Source code
+src/ @stevekinney
+
+# Tests
+*.test.ts @stevekinney
+*.spec.ts @stevekinney
