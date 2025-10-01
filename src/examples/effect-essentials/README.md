@@ -462,7 +462,7 @@ In production, users navigating quickly can trigger the same issues.
 
 ## When NOT to Use useEffect
 
-### 1. Transforming Data for Rendering
+### Transforming Data for Rendering
 
 ```tsx
 // ❌ Bad - unnecessary effect
@@ -486,7 +486,7 @@ function TodoList({ todos }) {
 
 **Rule:** If you can calculate something during render, don't use useEffect.
 
-### 2. Handling User Events
+### Handling User Events
 
 ```tsx
 // ❌ Bad - effect for event handling
@@ -514,7 +514,7 @@ function Form() {
 
 **Rule:** If something happens in response to a user action, handle it in the event handler.
 
-### 3. Initializing State
+### Initializing State
 
 ```tsx
 // ❌ Bad - effect for initial state

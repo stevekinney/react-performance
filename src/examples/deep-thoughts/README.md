@@ -79,7 +79,7 @@ export const Thought = ({ id, content, addThought, deleteThought }: ThoughtProps
 
 ## Performance Issues Breakdown
 
-### 1. Unnecessary Re-renders
+### Unnecessary Re-renders
 
 When you add a thought:
 
@@ -87,7 +87,7 @@ When you add a thought:
 - ALL `Thought` components re-render (unnecessary!)
 - Even thoughts that haven't changed get new props and re-render
 
-### 2. New Function References
+### New Function References
 
 Every render creates new function objects:
 
@@ -99,7 +99,7 @@ function deleteThought(id: string) { ... }    // New function every render
 
 These new references break `React.memo` and cause child components to re-render.
 
-### 3. Expensive Calculations
+### Expensive Calculations
 
 The word count in the edit form:
 
@@ -112,7 +112,7 @@ words;
 
 This calculation happens on **every keystroke** and **every re-render**, even when the draft hasn't changed.
 
-### 4. Inline Functions in Callbacks
+### Inline Functions in Callbacks
 
 ```tsx
 <Button onClick={() => addThought(content)}>Duplicate</Button>
@@ -501,7 +501,7 @@ const Thought = memo(({ id, content, createdAt }: DeepThought) => {
 
 ## Key Optimization Principles
 
-### 1. Memoize Callbacks with useCallback
+### Memoize Callbacks with useCallback
 
 ```tsx
 // ❌ New function every render
@@ -511,7 +511,7 @@ const handleClick = () => doSomething();
 const handleClick = useCallback(() => doSomething(), []);
 ```
 
-### 2. Memoize Components with React.memo
+### Memoize Components with React.memo
 
 ```tsx
 // ❌ Re-renders even if props haven't changed
@@ -521,7 +521,7 @@ export const Thought = (props) => { ... };
 export const Thought = memo((props) => { ... });
 ```
 
-### 3. Memoize Expensive Calculations with useMemo
+### Memoize Expensive Calculations with useMemo
 
 ```tsx
 // ❌ Recalculates every render
@@ -531,7 +531,7 @@ const wordCount = draft.trim().split(/\s+/).length;
 const wordCount = useMemo(() => draft.trim().split(/\s+/).length, [draft]);
 ```
 
-### 4. Use Functional State Updates
+### Use Functional State Updates
 
 ```tsx
 // ❌ Depends on current state (needs dependency)
@@ -545,7 +545,7 @@ const add = useCallback(() => {
 }, []); // Never changes!
 ```
 
-### 5. Avoid Inline Functions in JSX
+### Avoid Inline Functions in JSX
 
 ```tsx
 // ❌ New function every render
@@ -609,7 +609,7 @@ const handleDelete = useCallback(() => deleteThought(id), [id, deleteThought]);
 
 ## Common Pitfalls
 
-### 1. Forgetting Dependencies
+### Forgetting Dependencies
 
 ```tsx
 // ❌ Missing dependency
@@ -623,7 +623,7 @@ const handleClick = useCallback(() => {
 }, [value]);
 ```
 
-### 2. Comparing Objects/Arrays in memo
+### Comparing Objects/Arrays in memo
 
 ```tsx
 // ❌ Shallow comparison fails for objects
@@ -635,7 +635,7 @@ export const Thought = memo((props) => { ... }, (prev, next) => {
 });
 ```
 
-### 3. Over-optimization
+### Over-optimization
 
 ```tsx
 // ❌ Unnecessary memoization

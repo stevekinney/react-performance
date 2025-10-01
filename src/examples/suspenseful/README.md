@@ -371,7 +371,7 @@ export default Application;
 
 ## Key Concepts
 
-### 1. The use() Hook
+### The use() Hook
 
 ```tsx
 // Unwraps a promise
@@ -389,7 +389,7 @@ const data = use(dataPromise);
 - ✅ Automatic error boundaries
 - ✅ Can be called conditionally (unlike hooks!)
 
-### 2. Suspense Boundaries
+### Suspense Boundaries
 
 ```tsx
 <Suspense fallback={<Skeleton />}>
@@ -404,7 +404,7 @@ const data = use(dataPromise);
 - Suspense catches it and shows the fallback
 - When promise resolves, child re-renders with data
 
-### 3. Strategic Boundary Placement
+### Strategic Boundary Placement
 
 **Single boundary (all-or-nothing)**:
 

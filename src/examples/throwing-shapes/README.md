@@ -229,7 +229,7 @@ startTransition(() => {
 
 While `useDeferredValue` is perfect for this use case, here are other techniques you might combine:
 
-#### 1. Throttling the state updates
+#### Throttling the state updates
 
 ```tsx
 import { useCallback } from 'react';
@@ -251,7 +251,7 @@ function Application() {
 }
 ```
 
-#### 2. Debouncing instead of deferring
+#### Debouncing instead of deferring
 
 ```tsx
 function Application() {

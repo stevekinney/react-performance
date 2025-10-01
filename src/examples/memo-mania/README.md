@@ -631,7 +631,7 @@ export default Application;
 
 ## Key Principles
 
-### 1. useMemo - Memoize Values
+### useMemo - Memoize Values
 
 ```tsx
 // Without useMemo - calculates every render
@@ -653,7 +653,7 @@ const result = useMemo(() => expensiveCalculation(input), [input]);
 - Values that change every render anyway
 - When the memoization overhead costs more than the calculation
 
-### 2. React.memo - Memoize Components
+### React.memo - Memoize Components
 
 ```tsx
 // Without memo - re-renders when parent re-renders
@@ -679,7 +679,7 @@ export const Component = memo(function Component(props) {
 - Components that change frequently anyway
 - Root level components
 
-### 3. useCallback - Memoize Functions
+### useCallback - Memoize Functions
 
 ```tsx
 // Without useCallback - new function every render

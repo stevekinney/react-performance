@@ -511,7 +511,7 @@ function AccordionItem({ title, children }) {
 
 ## Key Principles
 
-### 1. Start Local, Lift When Needed
+### Start Local, Lift When Needed
 
 ```tsx
 // ✅ Start here
@@ -525,7 +525,7 @@ function Component() {
 
 **Don't prematurely lift state "just in case."** It's easier to lift state later when you discover it's needed than to push it back down.
 
-### 2. Colocation Improves Performance
+### Colocation Improves Performance
 
 Fewer components re-render when state changes:
 
@@ -553,7 +553,7 @@ function Parent() {
 }
 ```
 
-### 3. Colocation Improves Maintainability
+### Colocation Improves Maintainability
 
 Code is easier to understand and modify:
 
@@ -582,7 +582,7 @@ function Parent() {
 }
 ```
 
-### 4. Colocation Enables Reusability
+### Colocation Enables Reusability
 
 Components become portable:
 

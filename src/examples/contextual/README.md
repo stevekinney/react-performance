@@ -591,7 +591,7 @@ function Application() {
 
 ## Best Practices
 
-### 1. Split Contexts by Concern
+### Split Contexts by Concern
 
 **❌ Don't**: Put everything in one context
 
@@ -610,7 +610,7 @@ const CartContext = createContext(cart);
 
 **Rule of thumb**: If two pieces of state **always change together**, they can share a context. If they change independently, split them.
 
-### 2. Memoize Context Values
+### Memoize Context Values
 
 **❌ Don't**: Create new objects in render
 
@@ -626,7 +626,7 @@ const value = useMemo(() => ({ state, handler }), [state, handler]);
 <Context.Provider value={value}>
 ```
 
-### 3. Colocate Providers with Usage
+### Colocate Providers with Usage
 
 **❌ Don't**: Put all providers at app root
 
@@ -650,7 +650,7 @@ const value = useMemo(() => ({ state, handler }), [state, handler]);
     </Route>
 ```
 
-### 4. Use Separate Contexts for State and Actions
+### Use Separate Contexts for State and Actions
 
 For complex state, split data and updaters:
 
@@ -666,7 +666,7 @@ function AddButton() {
 }
 ```
 
-### 5. Consider Alternatives to Context
+### Consider Alternatives to Context
 
 Context isn't always the answer:
 
