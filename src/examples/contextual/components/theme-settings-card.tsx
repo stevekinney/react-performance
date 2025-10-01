@@ -1,23 +1,20 @@
 import { Card } from '$components/card';
 import { Button } from '$components/button';
-import type { ThemeSettings } from '../types';
+import { useTheme } from '../contexts/theme-context';
 
-interface ThemeSettingsCardProps {
-  theme: ThemeSettings;
-  onUpdateTheme: (theme: Partial<ThemeSettings>) => void;
-}
+export function ThemeSettingsCard() {
+	const { theme, updateTheme } = useTheme();
 
-export function ThemeSettingsCard({ theme, onUpdateTheme }: ThemeSettingsCardProps) {
-  console.log('🎨 ThemeSettingsCard rendered');
+	console.log('🎨 ThemeSettingsCard rendered');
 
-  const colors = [
-    { name: 'Blue', value: '#3b82f6' },
-    { name: 'Green', value: '#10b981' },
-    { name: 'Purple', value: '#8b5cf6' },
-    { name: 'Red', value: '#ef4444' },
-  ];
+	const colors = [
+		{ name: 'Blue', value: '#3b82f6' },
+		{ name: 'Green', value: '#10b981' },
+		{ name: 'Purple', value: '#8b5cf6' },
+		{ name: 'Red', value: '#ef4444' },
+	];
 
-  const fontSizes: Array<'small' | 'medium' | 'large'> = ['small', 'medium', 'large'];
+	const fontSizes: Array<'small' | 'medium' | 'large'> = ['small', 'medium', 'large'];
 
   return (
     <Card className="p-6">
@@ -32,17 +29,17 @@ export function ThemeSettingsCard({ theme, onUpdateTheme }: ThemeSettingsCardPro
           </div>
           <div className="flex gap-2">
             {colors.map((color) => (
-              <button
-                key={color.value}
-                onClick={() => onUpdateTheme({ primaryColor: color.value })}
-                className={`h-10 w-10 rounded-lg border-2 transition-transform hover:scale-110 ${
-                  theme.primaryColor === color.value
-                    ? 'border-slate-900 dark:border-slate-100'
-                    : 'border-slate-300 dark:border-slate-600'
-                }`}
-                style={{ backgroundColor: color.value }}
-                aria-label={color.name}
-              />
+							<button
+								key={color.value}
+								onClick={() => updateTheme({ primaryColor: color.value })}
+								className={`h-10 w-10 rounded-lg border-2 transition-transform hover:scale-110 ${
+									theme.primaryColor === color.value
+										? 'border-slate-900 dark:border-slate-100'
+										: 'border-slate-300 dark:border-slate-600'
+								}`}
+								style={{ backgroundColor: color.value }}
+								aria-label={color.name}
+							/>
             ))}
           </div>
         </div>
@@ -53,14 +50,14 @@ export function ThemeSettingsCard({ theme, onUpdateTheme }: ThemeSettingsCardPro
           </div>
           <div className="flex gap-2">
             {fontSizes.map((size) => (
-              <Button
-                key={size}
-                onClick={() => onUpdateTheme({ fontSize: size })}
-                variant={theme.fontSize === size ? 'primary' : 'secondary'}
-                size="small"
-              >
-                {size.charAt(0).toUpperCase() + size.slice(1)}
-              </Button>
+							<Button
+								key={size}
+								onClick={() => updateTheme({ fontSize: size })}
+								variant={theme.fontSize === size ? 'primary' : 'secondary'}
+								size="small"
+							>
+								{size.charAt(0).toUpperCase() + size.slice(1)}
+							</Button>
             ))}
           </div>
         </div>

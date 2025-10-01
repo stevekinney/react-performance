@@ -1,14 +1,12 @@
+import { useState } from 'react';
 import { Card } from '$components/card';
 import { Textarea } from '$components/textarea';
 import { Button } from '$components/button';
 
-// WRONG: Receiving state and setter as props
-interface TextWidgetWrongProps {
-  text: string;
-  onTextChange: (text: string) => void;
-}
+// ✅ CORRECT: State colocated inside the component
+export function TextWidget() {
+  const [text, setText] = useState('');
 
-export function TextWidgetWrong({ text, onTextChange }: TextWidgetWrongProps) {
   console.log('TextWidget rendered');
 
   const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
@@ -20,13 +18,13 @@ export function TextWidgetWrong({ text, onTextChange }: TextWidgetWrongProps) {
         Text Widget
       </h3>
       <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
-        Type something. Notice this re-renders when ANY widget updates because state is in the parent.
+        Type something. Notice this only re-renders when you interact with IT.
       </p>
 
       <Textarea
         label="Enter some text"
         value={text}
-        onChange={(e) => onTextChange(e.target.value)}
+        onChange={(e) => setText(e.target.value)}
         rows={4}
         placeholder="Start typing..."
       />
@@ -37,7 +35,7 @@ export function TextWidgetWrong({ text, onTextChange }: TextWidgetWrongProps) {
       </div>
 
       <div className="mt-4">
-        <Button onClick={() => onTextChange('')} variant="secondary" size="small">
+        <Button onClick={() => setText('')} variant="secondary" size="small">
           Clear
         </Button>
       </div>

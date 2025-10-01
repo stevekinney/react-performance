@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 import { Button } from '$/common/components/button';
 import { Container } from '$/common/components/container';
@@ -14,31 +14,44 @@ import { initialThoughts } from './utilities/initial-thoughts';
 function Application() {
   const [thoughts, setThoughts] = useState<DeepThought[]>(initialThoughts);
 
-  function addThought(content: string) {
+  const addThought = useCallback((content: string) => {
     const newThought = createThought(content);
-    setThoughts([...thoughts, newThought]);
-  }
+    setThoughts((prev) => [...prev, newThought]);
+  }, []);
 
-  function updateThought(id: string, changes: ThoughtChanges) {
-    const thought = thoughts.find((t) => t.id === id);
+  const updateThought = useCallback((id: string, changes: ThoughtChanges) => {
+    setThoughts((prev) => {
+      const thought = prev.find((t) => t.id === id);
+      if (!thought) return prev;
+      const updatedThought = { ...thought, ...changes };
+      return prev.map((t) => (t.id === id ? updatedThought : t));
+    });
+  }, []);
 
-    if (!thought) return;
+  const deleteThought = useCallback((id: string) => {
+    setThoughts((prev) => prev.filter((t) => t.id !== id));
+  }, []);
 
-    const updatedThought = { ...thought, ...changes };
-
-    setThoughts(thoughts.map((t) => (t.id === id ? updatedThought : t)));
-  }
-
-  function deleteThought(id: string) {
-    setThoughts(thoughts.filter((t) => t.id !== id));
-  }
-
-  function clearAll() {
+  const clearAll = useCallback(() => {
     setThoughts([]);
-  }
+  }, []);
 
   return (
     <Container className="my-8 flex flex-col gap-8">
+      <section>
+        <h1 className="mb-2 text-3xl font-bold text-slate-900 dark:text-slate-100">
+          Deep Thoughts
+        </h1>
+        <p className="text-slate-600 dark:text-slate-400">
+          Capture and manage your thoughts. Now optimized with useCallback - child components only re-render when necessary!
+        </p>
+        <div className="mt-4 rounded-md bg-green-50 p-4 dark:bg-green-900/20">
+          <p className="text-sm font-medium text-green-800 dark:text-green-200">
+            ✅ Optimized with useCallback, memo, and useMemo for efficient re-renders
+          </p>
+        </div>
+      </section>
+
       <CaptureThought onSubmit={addThought} />
 
       <Thoughts

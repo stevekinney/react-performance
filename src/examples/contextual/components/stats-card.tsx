@@ -1,27 +1,22 @@
 import { Card } from '$components/card';
 import { Button } from '$components/button';
-import type { AppStats } from '../types';
+import { useStats } from '../contexts/stats-context';
 
-interface StatsCardProps {
-  stats: AppStats;
-  onRefresh: () => void;
-}
+export function StatsCard() {
+	const { stats, refreshStats } = useStats();
 
-export function StatsCard({ stats, onRefresh }: StatsCardProps) {
-  console.log('📊 StatsCard rendered');
+	console.log('📊 StatsCard rendered');
 
-  const timeAgo = Math.floor((Date.now() - stats.lastUpdated) / 1000);
+	const timeAgo = Math.floor((Date.now() - stats.lastUpdated) / 1000);
 
-  return (
-    <Card className="p-6">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
-          Live Statistics
-        </h2>
-        <Button onClick={onRefresh} size="small" variant="secondary">
-          Refresh
-        </Button>
-      </div>
+	return (
+		<Card className="p-6">
+			<div className="mb-4 flex items-center justify-between">
+				<h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Live Statistics</h2>
+				<Button onClick={refreshStats} size="small" variant="secondary">
+					Refresh
+				</Button>
+			</div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">

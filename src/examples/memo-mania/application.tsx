@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Container } from '$components/container';
 import { Button } from '$components/button';
 import { CalculationList } from './components/calculation-list';
@@ -12,7 +12,8 @@ function Application() {
     { id: '2', type: 'factorial', input: 15 },
   ]);
 
-  function addCalculation() {
+  // Use useCallback to maintain stable function references
+  const addCalculation = useCallback(() => {
     const randomType = CALCULATION_TYPES[Math.floor(Math.random() * CALCULATION_TYPES.length)];
     const defaultInput = randomType === 'fibonacci' ? 25 : 10;
 
@@ -22,20 +23,20 @@ function Application() {
       input: defaultInput,
     };
 
-    setCalculations([...calculations, newCalculation]);
-  }
+    setCalculations((prev) => [...prev, newCalculation]);
+  }, []);
 
-  function updateCalculation(id: string, input: number) {
-    setCalculations(
-      calculations.map((calc) =>
+  const updateCalculation = useCallback((id: string, input: number) => {
+    setCalculations((prev) =>
+      prev.map((calc) =>
         calc.id === id ? { ...calc, input } : calc
       )
     );
-  }
+  }, []);
 
-  function deleteCalculation(id: string) {
-    setCalculations(calculations.filter((calc) => calc.id !== id));
-  }
+  const deleteCalculation = useCallback((id: string) => {
+    setCalculations((prev) => prev.filter((calc) => calc.id !== id));
+  }, []);
 
   return (
     <Container className="my-8 space-y-8">
@@ -44,13 +45,12 @@ function Application() {
           Memo Mania
         </h1>
         <p className="text-slate-600 dark:text-slate-400">
-          Try changing a number in any card. Notice how ALL cards recalculate (check the console)?
-          That&apos;s because we&apos;re not using memoization. Every state change triggers every expensive
-          calculation to run again.
+          All optimizations applied! Change a number and check the console - only the changed
+          calculation runs. Try adding/deleting cards too.
         </p>
-        <div className="mt-4 rounded-md bg-yellow-50 p-4 dark:bg-yellow-900/20">
-          <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
-            💡 Open your browser console to see when calculations run
+        <div className="mt-4 rounded-md bg-green-50 p-4 dark:bg-green-900/20">
+          <p className="text-sm font-medium text-green-800 dark:text-green-200">
+            ✅ Using useMemo, React.memo, and useCallback for maximum performance
           </p>
         </div>
       </section>

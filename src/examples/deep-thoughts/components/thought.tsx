@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo, useCallback, useMemo } from 'react';
 
 import { Button } from '$/common/components/button';
 import { Input } from '$/common/components/input';
@@ -8,7 +8,7 @@ import type { DeepThought, ThoughtActions } from '../types';
 
 type ThoughtProps = DeepThought & ThoughtActions;
 
-export const Thought = ({
+const ThoughtComponent = ({
   id,
   content,
   createdAt,
@@ -19,13 +19,37 @@ export const Thought = ({
   const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState<string>(content);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     updateThought?.(id, { content: draft });
     setIsEditing(false);
-  };
+  }, [updateThought, id, draft]);
 
-  const date = new Date(createdAt).toLocaleString();
+  const handleDuplicate = useCallback(() => {
+    addThought(content);
+  }, [addThought, content]);
+
+  const handleDelete = useCallback(() => {
+    deleteThought(id);
+  }, [deleteThought, id]);
+
+  const toggleEdit = useCallback(() => {
+    setIsEditing((editing) => !editing);
+  }, []);
+
+  const resetDraft = useCallback(() => {
+    setDraft(content);
+  }, [content]);
+
+  const date = useMemo(() => new Date(createdAt).toLocaleString(), [createdAt]);
+
+  const wordCount = useMemo(() => {
+    const trimmed = draft.trim();
+    const count = trimmed.length ? trimmed.split(/\s+/).length : 0;
+    const wordLabel = count === 1 ? 'word' : 'words';
+    const charLabel = draft.length === 1 ? 'character' : 'characters';
+    return `${count} ${wordLabel} • ${draft.length} ${charLabel}`;
+  }, [draft]);
 
   return (
     <div className="group flex flex-col gap-4 bg-slate-50 p-4 shadow-sm dark:bg-slate-800">
@@ -36,11 +60,11 @@ export const Thought = ({
         </div>
 
         <div className="invisible flex gap-1 group-hover:visible">
-          <Button size="small" variant="secondary" onClick={() => addThought(content)}>
+          <Button size="small" variant="secondary" onClick={handleDuplicate}>
             Duplicate
           </Button>
 
-          <Button size="small" variant="danger" onClick={() => deleteThought(id)}>
+          <Button size="small" variant="danger" onClick={handleDelete}>
             Forget
           </Button>
         </div>
@@ -48,7 +72,7 @@ export const Thought = ({
         <Toggle
           checked={isEditing}
           label="Edit"
-          onClick={() => setIsEditing((editing) => !editing)}
+          onClick={toggleEdit}
           className="whitespace-nowrap"
         >
           Edit
@@ -62,17 +86,14 @@ export const Thought = ({
         >
           <Input label="Update Thought" value={draft} onChange={(e) => setDraft(e.target.value)} />
           <div className="-mt-1 text-xs text-slate-500">
-            {draft.trim().length ? draft.trim().split(/\s+/).length : 0}{' '}
-            {draft.trim().length === 0 || draft.trim().split(/\s+/).length !== 1 ? 'words' : 'word'}
-            {' • '}
-            {draft.length} {draft.length === 1 ? 'character' : 'characters'}
+            {wordCount}
           </div>
           <div className="flex justify-end gap-2">
             <Button
               variant="secondary"
               className="self-end"
               type="button"
-              onClick={() => setDraft(content)}
+              onClick={resetDraft}
             >
               Reset
             </Button>
@@ -85,3 +106,7 @@ export const Thought = ({
     </div>
   );
 };
+
+ThoughtComponent.displayName = 'Thought';
+
+export const Thought = memo(ThoughtComponent);

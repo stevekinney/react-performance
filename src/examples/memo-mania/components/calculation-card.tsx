@@ -1,3 +1,4 @@
+import { useMemo, memo } from 'react';
 import { Button } from '$components/button';
 import { Input } from '$components/input';
 import { Card } from '$components/card';
@@ -10,9 +11,13 @@ interface CalculationCardProps {
   onDelete: (id: string) => void;
 }
 
-export function CalculationCard({ calculation, onUpdate, onDelete }: CalculationCardProps) {
-  // This expensive calculation runs on EVERY render of ANY card
-  const result = calculate(calculation.type, calculation.input);
+// Wrap component with React.memo to prevent unnecessary re-renders
+export const CalculationCard = memo(function CalculationCard({ calculation, onUpdate, onDelete }: CalculationCardProps) {
+  // Use useMemo to cache expensive calculations
+  const result = useMemo(
+    () => calculate(calculation.type, calculation.input),
+    [calculation.type, calculation.input],
+  );
 
   const label = getCalculationLabel(calculation.type);
   const description = getCalculationDescription(calculation.type);
@@ -54,4 +59,4 @@ export function CalculationCard({ calculation, onUpdate, onDelete }: Calculation
       </div>
     </Card>
   );
-}
+});
