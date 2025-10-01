@@ -3,9 +3,14 @@ import { Input } from '$/common/components/input';
 
 type CaptureThoughtProps = {
   onSubmit: (content: string) => void;
+  onChange: (content: string) => void;
 };
 
-export const CaptureThought = ({ onSubmit }: CaptureThoughtProps) => {
+export const CaptureThought = ({
+  draftThought,
+  onSubmit,
+  onChange,
+}: CaptureThoughtProps & { draftThought: string }) => {
   return (
     <div className="py-4">
       <form
@@ -13,13 +18,16 @@ export const CaptureThought = ({ onSubmit }: CaptureThoughtProps) => {
         onSubmit={(e) => {
           e.preventDefault();
 
-          const formData = new FormData(e.currentTarget);
-          const content = formData.get('thought');
-
-          onSubmit(String(content));
+          onSubmit(draftThought);
         }}
       >
-        <Input name="thought" placeholder="What's on your mind?" required />
+        <Input
+          name="thought"
+          placeholder="What's on your mind?"
+          required
+          value={draftThought}
+          onChange={(e) => onChange(e.target.value)}
+        />
 
         <Button type="submit" className="whitespace-nowrap">
           Capture Thought
