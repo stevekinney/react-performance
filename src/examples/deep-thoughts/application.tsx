@@ -40,7 +40,11 @@ function Application() {
 
   return (
     <Container className="my-8 flex flex-col gap-8">
-      <CaptureThought onSubmit={addThought} />
+      <CaptureThought
+        draftThought={draftThought}
+        onChange={setDraftThought}
+        onSubmit={addThought}
+      />
 
       <Thoughts
         updateThought={updateThought}
