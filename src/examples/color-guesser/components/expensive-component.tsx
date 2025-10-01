@@ -1,4 +1,4 @@
-import { block } from '$common/gremlins/be-busy';
+import { beBusy } from '$/common/gremlins/be-busy';
 
 /**
  * An intentionally expensive component that simulates heavy computation.
@@ -6,7 +6,7 @@ import { block } from '$common/gremlins/be-busy';
  */
 export const ExpensiveComponent = () => {
   // Simulate expensive work
-  block(100);
+  beBusy(100);
 
   console.log('💰 ExpensiveComponent rendered - this is EXPENSIVE!');
 
