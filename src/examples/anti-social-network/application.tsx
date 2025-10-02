@@ -1,10 +1,10 @@
-import { useState, useEffect, useOptimistic } from 'react';
+import { useState, useEffect, useOptimistic, useTransition } from 'react';
 import { Container } from '$components/container';
 import { Alert } from '$components/alert';
 import { PostForm } from './components/post-form';
 import { PostList } from './components/post-list';
 import { createPost, removePost, listPosts } from '$/common/api';
-import type { OptimisticPost, Post, PostFormData } from './types';
+import type { Id, OptimisticPost, Post, PostFormData } from './types';
 
 // Using a fixed user ID for this demo
 const CURRENT_USER_ID = 1;
@@ -13,6 +13,7 @@ function Application() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const [optimisticPosts, addOptimisticPost] = useOptimistic(
     posts,
@@ -46,32 +47,39 @@ function Application() {
   }, []);
 
   const handleCreatePost = async (formData: PostFormData) => {
-    try {
-      setError(null);
+    startTransition(async () => {
+      try {
+        setError(null);
 
-      const temporary: OptimisticPost = {
-        id: crypto.randomUUID() as unknown as any,
-        title: formData.title,
-        body: formData.body,
-        userId: CURRENT_USER_ID as any,
-        isPending: true,
-      };
+        const temporary: OptimisticPost = {
+          id: crypto.randomUUID() as unknown as Id,
+          title: formData.title,
+          body: formData.body,
+          userId: CURRENT_USER_ID as unknown as Id,
+          isPending: true,
+        };
 
-      addOptimisticPost(temporary);
+        addOptimisticPost(temporary);
 
-      // Call API and wait for response
-      const newPost = await createPost({
-        title: formData.title,
-        body: formData.body,
-        userId: CURRENT_USER_ID as unknown as import('$/common/api').Id,
-      });
+        // Call API and wait for response
+        const newPost = await createPost({
+          title: formData.title,
+          body: formData.body,
+          userId: CURRENT_USER_ID as unknown as import('$/common/api').Id,
+        });
 
-      // Add the new post to the beginning of the list
-      setPosts((prev) => [newPost, ...prev]);
-    } catch (err) {
-      setError('Failed to create post. Please try again.');
-      console.error('Error creating post:', err);
-    }
+        // Add the new post to the beginning of the list
+        setPosts((prev) => [newPost, ...prev]);
+
+        // Remove the optimistic post
+        addOptimisticPost({ ...temporary, isPending: false });
+      } catch (err) {
+        // Remove the optimistic post on error
+        addOptimisticPost({ ...temporary, isPending: false });
+        setError('Failed to create post. Please try again.');
+        console.error('Error creating post:', err);
+      }
+    });
   };
 
   const handleDeletePost = async (id: number) => {
